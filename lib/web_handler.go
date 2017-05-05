@@ -7,18 +7,25 @@ import (
 )
 
 type overlay_url struct {
-    Time_now string
+    Time_now time.Time
+    Time_string string
     Url string
 }
 
 func NewOverlayUrl() overlay_url {
-    time_now := get_time()
-    url := get_url(time_now)
-    return overlay_url{time_now, url}
+    time_now := time.Now()
+    time_string := get_time_string(time_now)
+    url := get_url(time_string)
+    return overlay_url{time_now, time_string, url}
 }
 
-func get_time() string {
-    time_now := time.Now()
+func (o *overlay_url) SubFive() {
+    o.Time_now = o.Time_now.Add(-5 * time.Minute)
+    o.Time_string = get_time_string(o.Time_now)
+    o.Url = get_url(o.Time_string)
+}
+
+func get_time_string(time_now time.Time) string {
     year, month, date := time_now.Date()
     hour, min := time_now.Hour(), time_now.Minute()
     min = make_five(min)
