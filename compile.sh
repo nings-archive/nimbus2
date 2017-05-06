@@ -3,17 +3,17 @@ declare build_status
 
 compile () {
     echo "- Removing old nimbus2..."
-    rm ~/go/src/nimbus2/nimbus2 2> /dev/null
+    rm ~/go/src/nimbus2/main 2> /dev/null
     remove_status=$?
     if [ "$remove_status" = "1" ]; then
         echo "File \"nimbus2\" not found"
     fi
 
-    sh ~/go/src/nimbus2/lib/install.sh
+    go install nimbus2/lib
     install_status=$?
 
-    echo "- Building nimbus2.go..."
-    go build ~/go/src/nimbus2/nimbus2.go
+    echo "- Building main.go"
+    go build ~/go/src/nimbus2/main.go
     build_status=$?
 }
 

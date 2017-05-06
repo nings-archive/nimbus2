@@ -31,8 +31,8 @@ func getTimeString(timeNow time.Time) string {
     min = makeFive(min)
 
     yearStr, monthStr, dateStr, hourStr, minStr := 
-    strconv.Itoa(year), strconv.Itoa(date),
-    strconv.Itoa(int(month)),
+    strconv.Itoa(year), strconv.Itoa(int(month)),
+    strconv.Itoa(date),
     strconv.Itoa(hour), strconv.Itoa(min)
 
     yearStr, monthStr, dateStr, hourStr, minStr =
