@@ -6,9 +6,8 @@ import (
 )
 
 func main() {
-    overlayUrl := lib.NewOverlayUrl()
-    download := lib.NewDownload(&overlayUrl)
-    fmt.Println(download.OverlayUrl.TimeString, download.Response.StatusCode)
-    download.SubFive()
-    fmt.Println(download.OverlayUrl.TimeString, download.Response.StatusCode)
+    download := lib.NewDownload()
+    fmt.Println(download.Url, download.StatusCode)
+    download.SubFiveMins()
+    fmt.Println(download.Url, download.StatusCode)
 }
