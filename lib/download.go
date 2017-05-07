@@ -5,19 +5,17 @@ import (
 )
 
 type download struct {
-    OverlayUrl overlayUrl
-    Response http.Response
-    StatusCode int
+    OverlayUrl *overlayUrl
+    Response *http.Response
 }
 
 func NewDownload(o *overlayUrl) download {
     response, _ := http.Get(o.Url)
-    return download{*o, *response, response.StatusCode}
+    return download{o, response}
 }
 
 func (d *download) SubFive() {
     d.OverlayUrl.SubFive()
     response, _ := http.Get(d.OverlayUrl.Url)
-    d.Response = *response
-    d.StatusCode = d.Response.StatusCode
+    d.Response = response
 }

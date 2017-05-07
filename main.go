@@ -8,7 +8,7 @@ import (
 func main() {
     overlayUrl := lib.NewOverlayUrl()
     download := lib.NewDownload(&overlayUrl)
-    fmt.Println(download.OverlayUrl.TimeString, download.StatusCode)
+    fmt.Println(download.OverlayUrl.TimeString, download.Response.StatusCode)
     download.SubFive()
-    fmt.Println(download.OverlayUrl.TimeString, download.StatusCode)
+    fmt.Println(download.OverlayUrl.TimeString, download.Response.StatusCode)
 }
