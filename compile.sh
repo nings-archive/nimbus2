@@ -1,29 +1,43 @@
 declare install_status
 declare build_status
+WinBashErr='interrupted system call'
 
 compile () {
-    echo "- Removing old nimbus2..."
+    printf "Removing old main...\n"
     rm ~/go/src/nimbus2/main 2> /dev/null
     remove_status=$?
     if [ "$remove_status" = "1" ]; then
-        echo "File \"nimbus2\" not found"
+        printf "  WARN: File \"main\" not found\n"
     fi
 
-    go install nimbus2/lib
-    install_status=$?
+    printf "Installing lib/...\n"
+    installOutErr="$(go install nimbus2/lib 2>&1)"; install_status=$?
+    while [[ "$installOutErr" == *"$WinBashErr"* ]]; do
+        printf "  ERR: $installOutErr\n"
+        installOutErr="$(go install nimbus2/lib 2>&1)"; install_status=$?
+    done
+    if [ ! "$installOutErr" == "" ]; then
+        printf "  ERR: $installOutErr\n"
+    fi
 
-    echo "- Building main.go"
-    go build ~/go/src/nimbus2/main.go
-    build_status=$?
+    printf "Building main.go...\n"
+    buildOutErr="$(go build ~/go/src/nimbus2/main.go 2>&1)"; build_status=$?
+    while [[ "$buildOutErr" == *"$WinBashErr"* ]]; do
+        printf "  ERR: $buildOutErr\n"
+        buildOutErr="$(go build ~/go/src/nimbus2/main.go 2>&1)"; build_status=$?
+    done
+    if [ ! "$buildOutErr" == "" ]; then
+        printf "  ERR: $buildOutErr\n"
+    fi
 }
 
 while true; do
     compile
     if [ "$install_status" == "0" ] && [ "$build_status" == "0" ]; then
-        echo "- Success!"
+        printf "Compile successful.\n"
         break
     fi
-    echo "- There was an error in the install or build stages"
-    echo "- Try again: <enter>; Abort: <ctrl-c>"
+    printf "There was an error in the install or build stages\n"
+    printf "Try again: <enter>; Abort: <ctrl-c>\n"
     read text
 done
