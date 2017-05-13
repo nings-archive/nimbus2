@@ -34,6 +34,9 @@ func (d *download) SubFiveMins() {
     d.Update(d.Time.Add(-5 * time.Minute))
 }
 
+func (d *download) Save() {
+}
+
 func getTimeString(_time time.Time) string {
     _time = _time.Round(5 * time.Minute)
     return _time.Format(

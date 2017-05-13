@@ -1,17 +1,17 @@
+WinBashErr='interrupted system call'
 declare install_status
 declare build_status
-WinBashErr='interrupted system call'
 
 compile () {
     printf "Removing old main...\n"
     rm ~/go/src/nimbus2/main 2> /dev/null
-    remove_status=$?
+    local remove_status=$?
     if [ "$remove_status" = "1" ]; then
         printf "  WARN: File \"main\" not found\n"
     fi
 
     printf "Installing lib/...\n"
-    installOutErr="$(go install nimbus2/lib 2>&1)"; install_status=$?
+    local installOutErr="$(go install nimbus2/lib 2>&1)"; install_status=$?
     while [[ "$installOutErr" == *"$WinBashErr"* ]]; do
         printf "  ERR: $installOutErr\n"
         installOutErr="$(go install nimbus2/lib 2>&1)"; install_status=$?
@@ -21,7 +21,7 @@ compile () {
     fi
 
     printf "Building main.go...\n"
-    buildOutErr="$(go build ~/go/src/nimbus2/main.go 2>&1)"; build_status=$?
+    local buildOutErr="$(go build ~/go/src/nimbus2/main.go 2>&1)"; build_status=$?
     while [[ "$buildOutErr" == *"$WinBashErr"* ]]; do
         printf "  ERR: $buildOutErr\n"
         buildOutErr="$(go build ~/go/src/nimbus2/main.go 2>&1)"; build_status=$?
@@ -34,7 +34,7 @@ compile () {
 while true; do
     compile
     if [ "$install_status" == "0" ] && [ "$build_status" == "0" ]; then
-        printf "Compile successful.\n"
+        printf "Compiled without interrupted system call.\n"
         break
     fi
     printf "There was an error in the install or build stages\n"
