@@ -12,6 +12,5 @@ func main() {
         download.SubFiveMins()
         fmt.Println(download.Url, download.StatusCode) 
     }
-
-    lib.CheckAndCreate("./testdir")
+    download.Save()
 }

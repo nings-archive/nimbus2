@@ -1,6 +1,8 @@
 package lib
 
 import (
+    "io"
+    "os"
     "time"
     "strings"
     "net/http"
@@ -35,6 +37,15 @@ func (d *download) SubFiveMins() {
 }
 
 func (d *download) Save() {
+    defer d.Response.Body.Close()
+    CheckAndCreate("./records")
+
+    file, err := os.Create("./records/" + d.FileName)
+    if err != nil { panic(err) }
+    defer file.Close()
+
+    _, err = io.Copy(file, d.Response.Body)
+    if err != nil { panic(err) }
 }
 
 func getTimeString(_time time.Time) string {
