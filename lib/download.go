@@ -4,6 +4,7 @@ import (
     "io"
     "os"
     "time"
+    "image"
     "strings"
     "net/http"
 )
@@ -23,6 +24,15 @@ func NewDownload() download {
     return _download
 }
 
+func NewLatestDownload() download {
+    _download := download{}
+    _download.Update(time.Now())
+    for _download.StatusCode == 404 {
+        _download.SubFiveMins()
+    }
+    return _download
+}
+
 func (d *download) Update(_time time.Time) {
     d.Time = _time
     d.TimeString = getTimeString(_time)
@@ -38,7 +48,7 @@ func (d *download) SubFiveMins() {
 
 func (d *download) Save() {
     defer d.Response.Body.Close()
-    CheckAndCreate("./records")
+    checkAndCreateDir("./records")
 
     file, err := os.Create("./records/" + d.FileName)
     if err != nil { panic(err) }
@@ -46,6 +56,13 @@ func (d *download) Save() {
 
     _, err = io.Copy(file, d.Response.Body)
     if err != nil { panic(err) }
+}
+
+func (d *download) GetImage() image.Image {
+    defer d.Response.Body.Close()
+    img, _, err := image.Decode(d.Response.Body)
+    if err != nil { panic(err) }
+    return img
 }
 
 func getTimeString(_time time.Time) string {
