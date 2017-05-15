@@ -7,25 +7,46 @@ import (
     "image/draw"
     "image/color"
     "github.com/nfnt/resize"
+    "fmt"
+    "reflect"
 )
 
 func AddMap(i image.Image) image.Image{
     mapFile, err := os.Open("./res/map.png")
     if err != nil { panic(err) }
-    mapImg, _, err := image.Decode(mapFile)
+    mapImgNrgba, _, err := image.Decode(mapFile)
+    mapImg := image.NewRGBA(mapImgNrgba.Bounds())
+    draw.Draw(mapImg, mapImg.Bounds(), mapImgNrgba, image.Point{0, 0}, draw.Src)
     if err != nil { panic(err) }
-    mask := image.NewUniform(color.Alpha{128})
+    
+    fmt.Println("i:", reflect.TypeOf(i))
+    fmt.Println("mapImg:", reflect.TypeOf(mapImg))
+
+    mask := image.NewUniform(color.Alpha16{32767})
+    fmt.Println("mask:", reflect.TypeOf(mask))
 
     canvas := image.NewRGBA(mapImg.Bounds())
+    fmt.Println("canvas:", reflect.TypeOf(canvas))
     draw.Draw(canvas, canvas.Bounds(), mapImg, image.Point{0, 0}, draw.Src)
+    fmt.Println("canvas:", reflect.TypeOf(canvas))
 
     draw.DrawMask(canvas, canvas.Bounds(), i, image.Point{0, 0}, mask, image.Point{0, 0}, draw.Over)
+    fmt.Println("canvas:", reflect.TypeOf(canvas))
 
     return canvas
 }
 
 func ResizeToMap(i image.Image) image.Image{
-    return resize.Resize(1491, 836, i, resize.Lanczos3)
+    return resize.Resize(1491, 836, i, resize.Bilinear)
+}
+
+func DebugResizes(i image.Image) {
+    SaveToRecords(resize.Resize(1491, 836, i, resize.NearestNeighbor), "nearestNeighbor.png")
+    SaveToRecords(resize.Resize(1491, 836, i, resize.Bilinear), "bilinear.png")
+    SaveToRecords(resize.Resize(1491, 836, i, resize.Bicubic), "bicubic.png")
+    SaveToRecords(resize.Resize(1491, 836, i, resize.MitchellNetravali), "mitchellNetravali.png")
+    SaveToRecords(resize.Resize(1491, 836, i, resize.Lanczos2), "lanczos2.png")
+    SaveToRecords(resize.Resize(1491, 836, i, resize.Lanczos3), "lanczos3.png")
 }
 
 func SaveToRecords(i image.Image, fileName string) {
