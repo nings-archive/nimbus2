@@ -7,8 +7,6 @@ import (
     "image/draw"
     "image/color"
     "github.com/nfnt/resize"
-    "fmt"
-    "reflect"
 )
 
 func AddMap(i image.Image) image.Image{
@@ -19,19 +17,12 @@ func AddMap(i image.Image) image.Image{
     draw.Draw(mapImg, mapImg.Bounds(), mapImgNrgba, image.Point{0, 0}, draw.Src)
     if err != nil { panic(err) }
     
-    fmt.Println("i:", reflect.TypeOf(i))
-    fmt.Println("mapImg:", reflect.TypeOf(mapImg))
-
     mask := image.NewUniform(color.Alpha16{32767})
-    fmt.Println("mask:", reflect.TypeOf(mask))
 
     canvas := image.NewRGBA(mapImg.Bounds())
-    fmt.Println("canvas:", reflect.TypeOf(canvas))
     draw.Draw(canvas, canvas.Bounds(), mapImg, image.Point{0, 0}, draw.Src)
-    fmt.Println("canvas:", reflect.TypeOf(canvas))
 
     draw.DrawMask(canvas, canvas.Bounds(), i, image.Point{0, 0}, mask, image.Point{0, 0}, draw.Over)
-    fmt.Println("canvas:", reflect.TypeOf(canvas))
 
     return canvas
 }
