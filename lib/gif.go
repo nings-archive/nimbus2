@@ -32,8 +32,8 @@ func pngToGif(name string) image.Image {
     file.Close()
 
     file, err = os.Open("temp.gif")
-    defer file.Close()
     if err != nil { panic(err) }
+    defer file.Close()
     gif, err := gif.Decode(file)
     if err != nil { panic(err) }
 
